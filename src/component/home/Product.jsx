@@ -1,12 +1,13 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import './home.css'
-import { Button } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
 import { productContext } from '../contextAPI/Context'
 
 const Product = () => {
 
     const [products, setProducts] = useState([])
+    const [selectedProduct, setSelectedProduct] = useState(null)
 
     const { token } = useContext( productContext )
 
@@ -73,7 +74,7 @@ const Product = () => {
 
 
     return (
-        <div className='product'>
+        <div className='product' id="products">
             <h3 className='text-center p-4'>Products</h3>
 
 
@@ -88,10 +89,27 @@ const Product = () => {
                                 <div className="comrice">
                                 <p className="company">{li.company}</p>
                                 <p className="price text-dark">Rs:{li.price}</p>
+                               
+                                <p className="sizes">
+    Sizes: {li.sizes?.join(", ")}
+</p>
                                 </div>
                                 <div className="btns">
-                                    <Button variant='success px-4' onClick={()=>{ addtoCart(li.image,li.title,li.company,li.price) }}> Add to Cart </Button>
-                                </div>
+    <Button
+        variant='success px-4'
+        onClick={() => addtoCart(li.image, li.title, li.company, li.price)}
+    >
+        Add to Cart
+    </Button>
+
+  <Button
+    variant='outline-dark'
+    className='px-4'
+    onClick={() => setSelectedProduct(li)}
+>
+    View Details
+</Button>
+</div>
                             </div>
                         })
 
@@ -99,9 +117,66 @@ const Product = () => {
                             <p>no product found</p>
                         </div>
                 }
-            </div>
+                       </div>
 
+            <Modal
+                show={selectedProduct !== null}
+                onHide={() => setSelectedProduct(null)}
+                centered
+            >
+                {selectedProduct && (
+                    <>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{selectedProduct.title}</Modal.Title>
+                        </Modal.Header>
 
+                        <Modal.Body>
+                            <img
+                                src={selectedProduct.image}
+                                alt={selectedProduct.title}
+                                style={{ width: "100%", height: "250px", objectFit: "contain" }}
+                            />
+
+                            <h5 className="mt-3">{selectedProduct.company}</h5>
+
+                            <h4>Rs. {selectedProduct.price}</h4>
+                            <p>{selectedProduct.description}</p>
+
+                            <p>
+                                <strong>Available Sizes:</strong>{" "}
+                                {selectedProduct.sizes?.join(", ")}
+                            </p>
+
+                            <p>
+                                <strong>Stock:</strong> {selectedProduct.stock}
+                            </p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button
+                                variant="secondary"
+                                onClick={() => setSelectedProduct(null)}
+                            >
+                                Close
+                            </Button>
+
+                            <Button
+                                variant="success"
+                                onClick={() => {
+                                    addtoCart(
+                                        selectedProduct.image,
+                                        selectedProduct.title,
+                                        selectedProduct.company,
+                                        selectedProduct.price
+                                    );
+                                }}
+                            >
+                                Add to Cart
+                            </Button>
+                        </Modal.Footer>
+                    </>
+                )}
+            </Modal>
         </div>
     )
 }

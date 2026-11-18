@@ -11,7 +11,13 @@ const Banner = () => {
 
         <div className="content">
         <h3>Fly Like A Bird</h3>
-        <Button variant='light px-4'> shop now </Button>
+       <Button
+  variant="light"
+  className="px-4"
+  onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+>
+  Shop Now
+</Button>
         </div>
 
     </div>
