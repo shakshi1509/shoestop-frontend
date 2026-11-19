@@ -1,76 +1,52 @@
+```jsx
 import React, { useState } from 'react'
 import './signup.css'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 
 const Signup = () => {
 
-    const navigate = useNavigate()
-
     const [name, setName] = useState('')
-    const [email, setMail] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
 
-    const url = "https://shoestop-backend-mri7.onrender.com/signup"
-
-    const submitHandler = async () => {
-
-        if (!name || !email || !password) {
-            alert("Please fill all the fields")
-            return
-        }
-
-        try {
-            setLoading(true)
-
-            const res = await axios.post(url, {
-                name,
-                email,
-                password
-            })
-
-            if (res.status === 200 || res.status === 201) {
-                localStorage.setItem('token', JSON.stringify(res.data.token))
-                alert("Registration successful!")
-                navigate('/')
-                window.location.reload()
-            }
-
-        } catch (error) {
-            console.log(error)
-            alert(error.response?.data?.message || "Signup failed. Please try again.")
-        } finally {
-            setLoading(false)
-        }
+    const testClick = () => {
+        alert("Button is working!")
     }
 
     return (
-        <div className='signup'>
+        <div className="signup">
 
             <input
                 type="text"
-                placeholder='username'
+                placeholder="Username"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
 
             <input
                 type="email"
-                placeholder='email'
+                placeholder="Email"
                 value={email}
-                onChange={(e) => setMail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
             />
 
             <input
                 type="password"
-                placeholder='password'
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button onClick={submitHandler} disabled={loading}>
-                {loading ? "Signing Up..." : "SignUp"}
+            <button
+                type="button"
+                onClick={testClick}
+                style={{
+                    cursor: 'pointer',
+                    zIndex: 9999,
+                    position: 'relative',
+                    pointerEvents: 'auto'
+                }}
+            >
+                SignUp
             </button>
 
         </div>
@@ -78,3 +54,4 @@ const Signup = () => {
 }
 
 export default Signup
+```
