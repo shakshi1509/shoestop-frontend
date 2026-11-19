@@ -1,48 +1,97 @@
-import React,{useContext, useState} from 'react'
+import React, { useContext, useState } from 'react'
 import '../signup/signup.css'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { productContext } from '../contextAPI/Context'
 
 const Login = () => {
+
     const navigate = useNavigate()
-    const { token,setToken } = useContext(productContext)
-    const [email, setMail] = useState('')
+    const { setToken } = useContext(productContext)
+
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-  
-    const url = "http://https://shoestop-backend-mri7.onrender.com/login"
- 
-    const changeMailHandler = (e) => {
-        setMail(e.target.value)
+    const [loading, setLoading] = useState(false)
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+
+        if (!email.trim() || !password.trim()) {
+            alert('Please enter email and password')
+            return
+        }
+
+        try {
+            setLoading(true)
+
+            const url = 'https://shoestop-backend-mri7.onrender.com/login'
+
+            const response = await axios.post(url, {
+                email,
+                password
+            })
+
+            if (response.status === 200 || response.status === 201) {
+
+                const receivedToken = response.data.token
+
+                if (!receivedToken) {
+                    alert('Login successful, but token was not received')
+                    return
+                }
+
+                localStorage.setItem('token', receivedToken)
+
+                setToken(receivedToken)
+
+                alert('Login successful!')
+
+                navigate('/home')
+            }
+
+        } catch (error) {
+
+            console.error('Login error:', error)
+
+            alert(
+                error.response?.data?.message ||
+                'Login failed. Please check your email and password.'
+            )
+
+        } finally {
+            setLoading(false)
+        }
     }
-    const changePasswordHandler = (e) => {
-        setPassword(e.target.value)
-    }
-  
-    const submitHandler = () => {
-      // console.log(name, mail, password)
-      axios.post(url, { name, email, password })
-      .then(res => {
-          if (res.status === 200 || res.status === 201) {
-            
-              localStorage.setItem('token', res.data.token);
-              console.log(res.data); 
-              setToken(res.data.token)
-              navigate('/home')
-          } else {
-              console.log('Request failed with status:', res.status);
-          }
-      })
-  }
-  
-  
+
     return (
-      <div className='signup'>
-        <input type="text" placeholder='email' onChange={(e) => { changeMailHandler(e) }}/>
-        <input type="password" placeholder='password'  onChange={(e) => { changePasswordHandler(e) }} />
-        <button onClick={() => { submitHandler() }}>Login</button>
-      </div>
+        <div className="signup">
+
+            <form onSubmit={submitHandler}>
+
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Please wait...' : 'Login'}
+                </button>
+
+            </form>
+
+        </div>
     )
-  }
+}
 
 export default Login
