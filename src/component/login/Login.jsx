@@ -84,7 +84,11 @@ const Login = () => {
                     required
                 />
 
-                <button type="submit" disabled={loading}>
+                <button
+    type="submit"
+    disabled={loading}
+    onClick={() => alert('Login button clicked!')}
+>
                     {loading ? 'Please wait...' : 'Login'}
                 </button>
 

@@ -1,4 +1,5 @@
-import React from 'react'
+
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 
@@ -13,33 +14,42 @@ import NavbarLog from './component/navbar/NavbarLog'
 
 const App = () => {
 
-  const hasToken = !!localStorage.getItem('token')
+    const [hasToken, setHasToken] = useState(
+        !!localStorage.getItem('token')
+    )
 
-  return (
-    <HashRouter>
-      <div>
-        {hasToken ? (
-          <NavbarLog />
-        ) : (
-          <Navbar />
-        )}
+    useEffect(() => {
+        const checkToken = () => {
+            setHasToken(!!localStorage.getItem('token'))
+        }
 
-        <Routes>
-          {hasToken ? (
-            <Route path="/" element={<Home />} />
-          ) : (
-            <Route path="/" element={<Login />} />
-          )}
+        window.addEventListener('storage', checkToken)
 
-          <Route path="/home" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/fav" element={<Fav />} />
-        </Routes>
-      </div>
-    </HashRouter>
-  )
+        return () => {
+            window.removeEventListener('storage', checkToken)
+        }
+    }, [])
+
+    return (
+        <HashRouter>
+            <div>
+                {hasToken ? <NavbarLog /> : <Navbar />}
+
+                <Routes>
+                    <Route
+                        path="/"
+                        element={hasToken ? <Home /> : <Login />}
+                    />
+
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/fav" element={<Fav />} />
+                </Routes>
+            </div>
+        </HashRouter>
+    )
 }
 
 export default App
