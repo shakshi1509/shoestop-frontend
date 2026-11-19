@@ -9,74 +9,72 @@ const Product = () => {
     const [products, setProducts] = useState([])
     const [selectedProduct, setSelectedProduct] = useState(null)
 
-    const { token } = useContext( productContext )
+    const { token } = useContext(productContext)
 
     const fetchData = async () => {
-        await axios.get("http://localhost:5000/api/getproducts")
+        await axios.get("https://shoestop-backend-mri7.onrender.com/api/getproducts")
             .then(res => setProducts(res.data))
+            .catch(error => console.log(error))
     }
 
     useEffect(() => {
         fetchData()
     }, [])
 
-    const getProduct = (image,title,company,price) =>{
+    const getProduct = (image, title, company, price) => {
         const headers = {
             Authorization: `Bearer ${token}`,
-          };
-        console.log(image,title,company,price);
-        axios.post('http://localhost:5000/api/addfav', {
-            image,title,company,price
-          },{
+        };
+
+        console.log(image, title, company, price);
+
+        axios.post('https://shoestop-backend-mri7.onrender.com/api/addfav', {
+            image, title, company, price
+        }, {
             headers
-          })
-          .then(function (response) {
-            console.log(response);
-            if(response.status === 202)
-            {
-                alert("already in fav list")
-            }
-            else {
-                alert("Item Added to fav")
-                getFav()
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        })
+            .then(function (response) {
+                console.log(response);
+                if (response.status === 202) {
+                    alert("already in fav list")
+                }
+                else {
+                    alert("Item Added to fav")
+                    getFav()
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    const addtoCart = (image,title,company,price) =>{
+    const addtoCart = (image, title, company, price) => {
         console.log(token);
-        
-        axios.post('http://localhost:5000/api/addcart', {
-            image,title,company,price
-          },{
-            headers : {
-                Authorization: `Bearer ${token}`,
-              }
-          })
-          .then(function (response) {
-            console.log(response);
-            if(response.status === 202)
-            {
-                alert("already in cart")
-            }
-            else {
-                alert("Item Added to cart")
-               
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-    }
 
+        axios.post('https://shoestop-backend-mri7.onrender.com/api/addcart', {
+            image, title, company, price
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(function (response) {
+                console.log(response);
+                if (response.status === 202) {
+                    alert("already in cart")
+                }
+                else {
+                    alert("Item Added to cart")
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <div className='product' id="products">
             <h3 className='text-center p-4'>Products</h3>
-
 
             <div className="pro-layout">
                 {
@@ -86,30 +84,31 @@ const Product = () => {
                             return <div className='cardz' key={li._id}>
                                 <img src={li.image} className='image' alt="" />
                                 <p className="title">{li.title}</p>
-                                <div className="comrice">
-                                <p className="company">{li.company}</p>
-                                <p className="price text-dark">Rs:{li.price}</p>
-                               
-                                <p className="sizes">
-    Sizes: {li.sizes?.join(", ")}
-</p>
-                                </div>
-                                <div className="btns">
-    <Button
-        variant='success px-4'
-        onClick={() => addtoCart(li.image, li.title, li.company, li.price)}
-    >
-        Add to Cart
-    </Button>
 
-  <Button
-    variant='outline-dark'
-    className='px-4'
-    onClick={() => setSelectedProduct(li)}
->
-    View Details
-</Button>
-</div>
+                                <div className="comrice">
+                                    <p className="company">{li.company}</p>
+                                    <p className="price text-dark">Rs:{li.price}</p>
+                                    <p className="sizes">
+                                        Sizes: {li.sizes?.join(", ")}
+                                    </p>
+                                </div>
+
+                                <div className="btns">
+                                    <Button
+                                        variant='success px-4'
+                                        onClick={() => addtoCart(li.image, li.title, li.company, li.price)}
+                                    >
+                                        Add to Cart
+                                    </Button>
+
+                                    <Button
+                                        variant='outline-dark'
+                                        className='px-4'
+                                        onClick={() => setSelectedProduct(li)}
+                                    >
+                                        View Details
+                                    </Button>
+                                </div>
                             </div>
                         })
 
@@ -117,7 +116,7 @@ const Product = () => {
                             <p>no product found</p>
                         </div>
                 }
-                       </div>
+            </div>
 
             <Modal
                 show={selectedProduct !== null}

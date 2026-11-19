@@ -6,7 +6,7 @@ import axios from 'axios'
 
 const Cart = () => {
 
-  const url = "http://localhost:5000/api/addcart"
+  const url = "http://https://shoestop-backend-mri7.onrender.com/api/addcart"
 
   const { cartProduct, setCartProducts,getcart} = useContext(productContext)
   const [total, setTotal] = useState(0)

@@ -21,7 +21,7 @@ const Context = ({ children }) => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('http://localhost:5000/api/addfav', { headers });
+        const response = await axios.get('http://https://shoestop-backend-mri7.onrender.com/api/addfav', { headers });
         setFavProductList(response.data);
       }
     } catch (error) {
@@ -37,7 +37,7 @@ const Context = ({ children }) => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('http://localhost:5000/api/addcart', { headers });
+        const response = await axios.get('http://https://shoestop-backend-mri7.onrender.com/api/addcart', { headers });
         setCartProducts(response.data);
       }
     } catch (error) {
