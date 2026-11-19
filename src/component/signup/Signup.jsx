@@ -1,4 +1,4 @@
-```jsx
+
 import React, { useState } from 'react'
 import './signup.css'
 import { useNavigate } from 'react-router-dom'
